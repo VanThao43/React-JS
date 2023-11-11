@@ -4,6 +4,7 @@
 // 2. useEffect(callback, [])
 // - Chỉ gọi callback 1 lần sau khi component được mounted
 // 3. useEffect(callback, [dependency])
+// - Callback sẽ được gọi lại mỗi khi dependency thay đổi
 
 
 //----------------------
@@ -12,32 +13,51 @@
 
 import { useEffect, useState } from "react"
 
+
+const taps = ['posts', 'comments', 'albums']
+
 function Content() {
+
+
 
     const [title, setTitle] = useState('')
     const [posts, setPosts] = useState([])
+    const [type, setType] = useState('posts')
+
 
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
+        fetch(`https://jsonplaceholder.typicode.com/${type}`)
             .then(res => res.json())
             .then(posts => {
                 setPosts(posts)
             })
-    }, [])
+
+
+    }, [type])
 
 
 
 
     return (
         <div>
-            <input
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-            />
+            {taps.map((tap) => (
+                <button
+                    key={tap}
+                    style={type == tap ? {
+                        color: '#fff',
+                        backgroundColor: '#333'
+                    } : {}}
+                    onClick={() => setType(tap)}
+                >
+                    {tap}
+                </button>
+            ))}
             <ul>
-                {posts.map((post) => (
-                    <li key={post.id}>{post.title}</li>
-                ))}
+                {
+                    posts.map(post => (
+                        <li key={post.id}>{post.title || post.name}</li>
+                    ))
+                }
             </ul>
         </div>
     )
