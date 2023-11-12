@@ -23,75 +23,24 @@ const taps = ['posts', 'comments', 'albums']
 
 function Content() {
 
-
-
-    const [posts, setPosts] = useState([])
-    const [type, setType] = useState('posts')
-    const [showGoToTop, setShowGoToTop] = useState(false)
-
-    useEffect(() => {
-        fetch(`https://jsonplaceholder.typicode.com/${type}`)
-            .then(res => res.json())
-            .then(posts => {
-                setPosts(posts)
-            })
-    }, [type])
-
+    const [width, setWidth] = useState(window.innerWidth)
 
     useEffect(() => {
 
-
-        const handleScroll = () => {
-            setShowGoToTop(window.scrollY >= 200)
+        const handleResize = () => {
+            setWidth(window.innerWidth)
         }
+        window.addEventListener('resize', handleResize)
 
-        window.addEventListener('scroll', handleScroll)
-
-        //Cleanup function
+        // Cleanup function
         return () => {
-            window.removeEventListener('scroll', handleScroll)
+            window.removeEventListener('resize', handleResize)
         }
-
-
     }, [])
-
-
-
 
     return (
         <div>
-            {taps.map((tap) => (
-                <button
-                    key={tap}
-                    style={type == tap ? {
-                        color: '#fff',
-                        backgroundColor: '#333'
-                    } : {}}
-                    onClick={() => setType(tap)}
-                >
-                    {tap}
-                </button>
-            ))}
-            <ul>
-                {
-                    posts.map(post => (
-                        <li key={post.id}>{post.title || post.name}</li>
-                    ))
-                }
-            </ul>
-
-            {showGoToTop && (
-                <button
-                    style={{
-                        position: 'fixed',
-                        right: 20,
-                        bottom: 20
-                    }}
-                >
-                    Go to Top
-                </button>)
-
-            }
+            <h1>{width}</h1>
         </div>
     )
 }
