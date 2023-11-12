@@ -11,6 +11,11 @@
 // 1. cả 3 trường hợp thì callback luôn được gọi sau khi component mounted
 // Dùng useEffect với tác dụng là sau khi UI được render thì mới gọi đến useEffect
 
+
+//1. callback luôn được gọi lại mỗi khi deps thay đổi
+//2. Cleanup function luôn được gọi trước khi component unmounted
+
+
 import { useEffect, useState } from "react"
 
 
@@ -20,10 +25,9 @@ function Content() {
 
 
 
-    const [title, setTitle] = useState('')
     const [posts, setPosts] = useState([])
     const [type, setType] = useState('posts')
-
+    const [showGoToTop, setShowGoToTop] = useState(false)
 
     useEffect(() => {
         fetch(`https://jsonplaceholder.typicode.com/${type}`)
@@ -31,9 +35,25 @@ function Content() {
             .then(posts => {
                 setPosts(posts)
             })
-
-
     }, [type])
+
+
+    useEffect(() => {
+
+
+        const handleScroll = () => {
+            setShowGoToTop(window.scrollY >= 200)
+        }
+
+        window.addEventListener('scroll', handleScroll)
+
+        //Cleanup function
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
+
+
+    }, [])
 
 
 
@@ -59,6 +79,19 @@ function Content() {
                     ))
                 }
             </ul>
+
+            {showGoToTop && (
+                <button
+                    style={{
+                        position: 'fixed',
+                        right: 20,
+                        bottom: 20
+                    }}
+                >
+                    Go to Top
+                </button>)
+
+            }
         </div>
     )
 }
