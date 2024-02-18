@@ -19,28 +19,20 @@
 import { useEffect, useState } from "react"
 
 
-const taps = ['posts', 'comments', 'albums']
-
 function Content() {
-
-    const [width, setWidth] = useState(window.innerWidth)
+    const [countdown, setCountdown] = useState(180)
 
     useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCountdown(prev => prev - 1)
+        }, 1000);
 
-        const handleResize = () => {
-            setWidth(window.innerWidth)
-        }
-        window.addEventListener('resize', handleResize)
-
-        // Cleanup function
-        return () => {
-            window.removeEventListener('resize', handleResize)
-        }
+        return () => clearInterval(intervalId)
     }, [])
 
     return (
         <div>
-            <h1>{width}</h1>
+            <h1>{countdown}</h1>
         </div>
     )
 }
