@@ -23,12 +23,12 @@ function Content() {
     const [countdown, setCountdown] = useState(180)
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            setCountdown(prev => prev - 1)
+        const intervalId = setTimeout(() => {       //setTimeout chỉ chạy 1 lần
+            setCountdown(countdown - 1)
         }, 1000);
 
         return () => clearInterval(intervalId)
-    }, [])
+    }, [countdown])
 
     return (
         <div>
