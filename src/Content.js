@@ -14,25 +14,40 @@
 
 //1. callback luôn được gọi lại mỗi khi deps thay đổi
 //2. Cleanup function luôn được gọi trước khi component unmounted
+//3. Cleanup luôn được gọi trước khi callback được gọi (trừ lần mounted)
 
 
 import { useEffect, useState } from "react"
 
 
 function Content() {
-    const [countdown, setCountdown] = useState(180)
+
+    const [avatar, setAvatar] = useState()
 
     useEffect(() => {
-        const intervalId = setTimeout(() => {       //setTimeout chỉ chạy 1 lần
-            setCountdown(countdown - 1)
-        }, 1000);
 
-        return () => clearInterval(intervalId)
-    }, [countdown])
+        return () => {
+            avatar && URL.revokeObjectURL(avatar.preview)
+        }
+    }, [avatar])
+
+    const handlePreviewAvatar = (e) => {
+        const file = e.target.files[0]
+
+        file.preview = URL.createObjectURL(file)
+
+        setAvatar(file)
+    }
 
     return (
         <div>
-            <h1>{countdown}</h1>
+            <input
+                type="file"
+                onChange={handlePreviewAvatar}
+            />
+            {avatar &&
+                <img src={avatar.preview} alt="" width="80%" />
+            }
         </div>
     )
 }
